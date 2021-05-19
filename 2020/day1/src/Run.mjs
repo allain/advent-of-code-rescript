@@ -4,28 +4,73 @@ import * as Fs from "fs";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
 import * as Belt_SetInt from "rescript/lib/es6/belt_SetInt.js";
 import * as Caml_format from "rescript/lib/es6/caml_format.js";
-import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
 var numbers = Belt_Array.map(Fs.readFileSync("input.txt", "utf-8").split("\n"), Caml_format.caml_int_of_string);
 
 var numbersSet = Belt_SetInt.fromArray(numbers);
 
-var match = numbers.find(function (n) {
-      return Belt_SetInt.get(numbersSet, 2020 - n | 0) !== undefined;
-    });
-
-if (match !== undefined) {
-  console.log(match, 2020 - match | 0, Math.imul(match, 2020 - match | 0));
-} else {
-  console.log("Not Found");
+function findTwoThatSumTo(total) {
+  var first = numbers.find(function (n) {
+        return Belt_SetInt.get(numbersSet, total - n | 0) !== undefined;
+      });
+  if (first !== undefined) {
+    return [
+            first,
+            total - first | 0
+          ];
+  }
+  
 }
 
-var match$1 = match === undefined ? undefined : Caml_option.some(match);
+function findThreeThatSumTo(total) {
+  return numbers.reduce((function (result, n1) {
+                if (result !== undefined) {
+                  return result;
+                }
+                var match = findTwoThatSumTo(total - n1 | 0);
+                if (match !== undefined) {
+                  return [
+                          n1,
+                          match[0],
+                          match[1]
+                        ];
+                }
+                
+              }), undefined);
+}
+
+console.log("For Part A:");
+
+var match = findTwoThatSumTo(2020);
+
+if (match !== undefined) {
+  var n2 = match[1];
+  var n1 = match[0];
+  console.log(n1, n2);
+  console.log(Math.imul(n1, n2));
+} else {
+  console.log("not found");
+}
+
+console.log("For Part B:");
+
+var match$1 = findThreeThatSumTo(2020);
+
+if (match$1 !== undefined) {
+  var n3 = match$1[2];
+  var n2$1 = match$1[1];
+  var n1$1 = match$1[0];
+  console.log(n1$1, n2$1, n3);
+  console.log(Math.imul(Math.imul(n1$1, n2$1), n3));
+} else {
+  console.log("not found");
+}
 
 export {
   numbers ,
   numbersSet ,
-  match$1 as match,
+  findTwoThatSumTo ,
+  findThreeThatSumTo ,
   
 }
 /* numbers Not a pure module */
