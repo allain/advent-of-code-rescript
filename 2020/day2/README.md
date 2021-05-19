@@ -1,4 +1,4 @@
-# Advent of Code 2020 - **ReScript** - Day 1
+# Advent of Code 2020 - **ReScript** - Day 2
 
 Implemented from default ReScript template. Changed to output mjs rather than commonjs.
 
