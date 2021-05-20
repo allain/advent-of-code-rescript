@@ -1,0 +1,23 @@
+{
+  "name": "rescript-project-template",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "start": "node ./dist/main.mjs",
+    "build": "npm run build:res && esbuild src/Run.mjs --format=esm --platform=node --bundle --outfile=./dist/main.mjs",
+    "build:res": "rescript",
+    "clean": "rescript clean -with-deps",
+    "dev": "rescript build -w"
+  },
+  "keywords": [
+    "rescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "rescript": "*"
+  },
+  "devDependencies": {
+    "esbuild": "^0.12.1"
+  }
+}
