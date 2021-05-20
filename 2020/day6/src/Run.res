@@ -27,7 +27,9 @@ let countAllYes = group => {
   let formCount = Array.length(forms)
   let answerCounts =
     forms->Array.reduce(Map.String.fromArray([]), (counts, form) =>
-      Js.String2.split(form, "")->Array.reduce(counts, (counts, letter) =>
+      form
+      ->Js.String2.split("")
+      ->Array.reduce(counts, (counts, letter) =>
         Map.String.set(counts, letter, 1 + Map.String.getWithDefault(counts, letter, 0))
       )
     )
