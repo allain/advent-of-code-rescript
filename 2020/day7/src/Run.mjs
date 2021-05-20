@@ -70,7 +70,31 @@ function allAncestorsOf(bagName) {
                   })));
 }
 
+console.log("Part A:");
+
 console.log(allAncestorsOf("shiny gold").length);
+
+var InvalidBag = /* @__PURE__ */Caml_exceptions.create("Run.InvalidBag");
+
+function sizeOf(bagName) {
+  var rule = rules.find(function (r) {
+        return r.name === bagName;
+      });
+  if (rule !== undefined) {
+    return Belt_Array.reduce(rule.contents, 1, (function (size, c) {
+                  return size + Math.imul(c.count, sizeOf(c.name)) | 0;
+                }));
+  }
+  throw {
+        RE_EXN_ID: InvalidBag,
+        _1: bagName,
+        Error: new Error()
+      };
+}
+
+console.log("Part B:");
+
+console.log(sizeOf("shiny gold") - 1 | 0);
 
 export {
   InvalidLetter ,
@@ -82,6 +106,8 @@ export {
   rules ,
   parentsOf ,
   allAncestorsOf ,
+  InvalidBag ,
+  sizeOf ,
   
 }
 /* rawRules Not a pure module */

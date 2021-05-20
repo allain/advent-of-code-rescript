@@ -60,4 +60,16 @@ let rec allAncestorsOf = bagName => {
   })
   ->Set.String.toArray
 }
+
+Js.log("Part A:")
 Js.log(Array.length(allAncestorsOf("shiny gold")))
+
+exception InvalidBag(string)
+let rec sizeOf = bagName => {
+  switch Js.Array2.find(rules, r => r.name == bagName) {
+  | None => raise(InvalidBag(bagName))
+  | Some(rule) => Array.reduce(rule.contents, 1, (size, c) => size + c.count * sizeOf(c.name))
+  }
+}
+Js.log("Part B:")
+Js.log(sizeOf("shiny gold") - 1)
