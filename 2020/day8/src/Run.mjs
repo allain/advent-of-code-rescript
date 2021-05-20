@@ -42,59 +42,89 @@ function parseStatement(raw) {
 
 var statements = Belt_Array.map(Fs.readFileSync("input.txt", "utf-8").split("\n"), parseStatement);
 
-function tick(_state) {
+function tick(_state, statements) {
   while(true) {
     var state = _state;
     if (Belt_SetInt.has(state.seen, state.pos)) {
       return state;
     }
     var match = Belt_Array.get(statements, state.pos);
-    if (match !== undefined) {
-      var instruction = match.instruction;
-      switch (instruction) {
-        case "acc" :
-            _state = {
-              pos: state.pos + 1 | 0,
-              acc: state.acc + match.n | 0,
-              seen: Belt_SetInt.add(state.seen, state.pos)
-            };
-            continue ;
-        case "jmp" :
-            _state = {
-              pos: state.pos + match.n | 0,
-              acc: state.acc,
-              seen: Belt_SetInt.add(state.seen, state.pos)
-            };
-            continue ;
-        case "nop" :
-            _state = {
-              pos: state.pos + 1 | 0,
-              acc: state.acc,
-              seen: Belt_SetInt.add(state.seen, state.pos)
-            };
-            continue ;
-        default:
-          throw {
-                RE_EXN_ID: InvalidInstruction,
-                _1: instruction,
-                Error: new Error()
-              };
-      }
-    } else {
-      throw {
-            RE_EXN_ID: InvalidStatementIndex,
-            _1: state.pos,
-            Error: new Error()
+    if (match === undefined) {
+      return state;
+    }
+    var instruction = match.instruction;
+    switch (instruction) {
+      case "acc" :
+          _state = {
+            pos: state.pos + 1 | 0,
+            acc: state.acc + match.n | 0,
+            seen: Belt_SetInt.add(state.seen, state.pos)
           };
+          continue ;
+      case "jmp" :
+          _state = {
+            pos: state.pos + match.n | 0,
+            acc: state.acc,
+            seen: Belt_SetInt.add(state.seen, state.pos)
+          };
+          continue ;
+      case "nop" :
+          _state = {
+            pos: state.pos + 1 | 0,
+            acc: state.acc,
+            seen: Belt_SetInt.add(state.seen, state.pos)
+          };
+          continue ;
+      default:
+        throw {
+              RE_EXN_ID: InvalidInstruction,
+              _1: instruction,
+              Error: new Error()
+            };
     }
   };
 }
+
+console.log("Part A:");
 
 console.log(tick({
           pos: 0,
           acc: 0,
           seen: undefined
-        }));
+        }, statements).acc);
+
+var index = statements.findIndex(function (statement, i) {
+      if (statement.instruction !== "jmp") {
+        return false;
+      }
+      var set = Belt_Array.set(statements, i, {
+            instruction: "nop",
+            n: 0
+          });
+      if (!set) {
+        return false;
+      }
+      var state = tick({
+            pos: 0,
+            acc: 0,
+            seen: undefined
+          }, statements);
+      var terminated = state.pos >= statements.length;
+      Belt_Array.set(statements, i, statement);
+      return terminated;
+    });
+
+if (Belt_Array.set(statements, index, {
+        instruction: "nop",
+        n: 0
+      })) {
+  console.log("Part B:");
+  console.log(tick({
+            pos: 0,
+            acc: 0,
+            seen: undefined
+          }, statements).acc);
+}
 
 export {
   InvalidLetter ,
@@ -105,6 +135,7 @@ export {
   parseStatement ,
   statements ,
   tick ,
+  index ,
   
 }
 /* statements Not a pure module */
