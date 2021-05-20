@@ -1,0 +1,22 @@
+{
+  "name": "rescript-project-template",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "start": "node ./dist/main.mjs",
+    "build": "rescript",
+    "clean": "rescript clean -with-deps",
+    "dev": "rescript build -w"
+  },
+  "keywords": [
+    "rescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "rescript": "*"
+  },
+  "devDependencies": {
+    "esbuild": "^0.12.1"
+  }
+}
