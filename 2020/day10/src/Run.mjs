@@ -24,26 +24,21 @@ function subInt(n1, n2) {
   return Caml_int64.sub(n1, Caml_int64.of_int32(n2));
 }
 
-function getSolutionAtIndex(sol, n) {
-  return Belt_Map.getWithDefault(sol, n, Int64.zero);
+function getSolutionRelative(sol, n, rel) {
+  return Belt_Map.getWithDefault(sol, Caml_int64.sub(n, Caml_int64.of_int32(rel)), Int64.zero);
 }
 
 var sol = Belt_Map.make(IntComp);
 
 var sol$1 = Belt_Map.set(sol, Int64.zero, Caml_int64.one);
 
+function add3(n1, n2, n3) {
+  return Caml_int64.add(Caml_int64.add(n1, n2), n3);
+}
+
 var sol$2 = Belt_Array.reduce(sortedNumbers, sol$1, (function (sol, line) {
         var sol$1 = Belt_Map.set(sol, line, Caml_int64.one);
-        var n = Caml_int64.sub(line, Caml_int64.one);
-        var n$1 = Caml_int64.sub(line, [
-              0,
-              2
-            ]);
-        var n$2 = Caml_int64.sub(line, [
-              0,
-              3
-            ]);
-        return Belt_Map.set(sol$1, line, Caml_int64.add(Caml_int64.add(Belt_Map.getWithDefault(sol$1, n, Int64.zero), Belt_Map.getWithDefault(sol$1, n$1, Int64.zero)), Belt_Map.getWithDefault(sol$1, n$2, Int64.zero)));
+        return Belt_Map.set(sol$1, line, add3(getSolutionRelative(sol$1, line, 1), getSolutionRelative(sol$1, line, 2), getSolutionRelative(sol$1, line, 3)));
       }));
 
 var sums = Belt_Map.valuesToArray(sol$2);
@@ -61,7 +56,8 @@ export {
   sortedNumbers ,
   IntComp ,
   subInt ,
-  getSolutionAtIndex ,
+  getSolutionRelative ,
+  add3 ,
   sol$2 as sol,
   sums ,
   lastExn ,

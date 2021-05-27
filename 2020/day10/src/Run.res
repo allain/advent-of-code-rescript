@@ -11,20 +11,20 @@ module IntComp = Id.MakeComparable({
 
 // helpers to make working with Int64 less annoying
 let subInt = (n1, n2) => Int64.sub(n1, Int64.of_int(n2))
-let getSolutionAtIndex = (sol, n) => Map.getWithDefault(sol, n, Int64.zero)
-
+let getSolutionRelative = (sol, n, rel) => Map.getWithDefault(sol, subInt(n, rel), Int64.zero)
 let sol = Map.make(~id=module(IntComp))
 let sol = Map.set(sol, Int64.zero, Int64.of_int(1))
+let add3 = (n1, n2, n3) => Int64.add(Int64.add(n1, n2), n3)
 
 let sol = sortedNumbers->Array.reduce(sol, (sol, line) => {
   let sol = Map.set(sol, line, Int64.of_int(1))
   Map.set(
     sol,
     line,
-    // Add the last 3 items in the solution
-    Int64.add(
-      Int64.add(getSolutionAtIndex(sol, subInt(line, 1)), getSolutionAtIndex(sol, subInt(line, 2))),
-      getSolutionAtIndex(sol, subInt(line, 3)),
+    add3(
+      getSolutionRelative(sol, line, 1),
+      getSolutionRelative(sol, line, 2),
+      getSolutionRelative(sol, line, 3),
     ),
   )
 })
